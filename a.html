@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://slb.wfjmall.cn:9910/appCenter/ios.jsp -->
+<html xmlns="http://www.w3.org/1999/xhtml" class="ui-mobile"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+	<!--<base href="/">--><base href=".">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	
+	<title>久其应用中心</title>
+	<link rel="stylesheet" type="text/css" href="./久其应用中心_files/appCenter.min.css">
+	<link rel="stylesheet" type="text/css" href="./久其应用中心_files/jquery.mobile.structure-1.2.0.min.css">
+	<script src="./久其应用中心_files/jquery-1.9.1.js.下载"></script>
+	<script src="./久其应用中心_files/jquery-ui.js.下载"></script>
+	<script src="./久其应用中心_files/jquery.mobile-1.2.0.js.下载"></script>
+  
+	<style>
+	.listitem{
+		background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#FFFFFF), to(#f0F0F0));
+	}
+	
+	.page{
+		background: rgba(150,150,150,0.5);
+	}
+	.setup{
+		background: rgb(102,192,6);
+		color: #fff;
+	}
+	.download{
+		width:70px;
+		margin-top:10px;
+		margin-right:20px;
+	}
+	.name{
+		font-family:CJK,微软雅黑;
+		font-size:16px;
+		color:#656565;
+	}
+	.version{
+		font-size:10px;
+		color:#aeaeae;
+	}
+	.description{
+		font-family:CJK,微软雅黑;
+		font-size:14px;
+		color:#656565;
+	}
+	</style>
+	<script>
+	var jqmbJS ="/appCenter/js/jquery.mobile-1.2.0.js";
+	var template;
+	var list;
+	var loading;
+	var path = "appCenter/xrestlet/apps?type=2";
+	var appData;
+	var hasAppStore;
+	
+	function showData(is){
+		if(appData == null){
+			return;
+		}
+		clearData();
+		for(var i  = 0; i < appData.length; i++){
+			var value = appData[i];
+			if(value.isAppStore === is){
+						var name = value.name;
+						var version = value.version;
+						var description = value.description;
+						
+						var app = getTemplate().clone();
+						
+						app.show();
+						app.attr("id",value.id);
+						app.find("#image").attr("src",/appCenter/+"appIcon/"+value.id);
+						
+						if(name.length > 10){
+							name = name.substring(0,10)+"...";
+						}
+						app.find("#name").text(name);
+						if(version.length > 5){
+							version = version.substring(0,5);
+						}
+						app.find("#version").text(version);
+						if(description && description.length > 5){
+							description = description.substring(0,10)+"...";
+						}
+						app.find("#description").text(description);
+						app.find("#setup").attr("href",value.setup);
+
+						if(is){
+							app.find("#setup").remove();
+						}
+						if(list == null){
+							list = $("#list");
+						}
+				app.appendTo(list);
+			}
+		}
+		
+	}
+	
+	
+	function loadData() {
+		$(function(){
+		$.ajax({
+			url: path,
+			type: 'GET',    
+			dataType: 'json',    
+			timeout: 5000,    
+			error: function(){
+				alert('连接超时，请刷新页面。');    
+			},
+			success: function(data){
+				appData = [];
+				$.each(data, function(key, value){
+					appData.push(value);
+					if(value.isAppStore){
+						hasAppStore = true;
+					}
+					// var row = $("#template").clone();  
+					// row.find("#id").text(value.id); 
+					// row.find("#name").text(value.name);  
+					// row.find("#type").text(value.type);  
+					// row.find("#operation").html("<a href='"+ value.setup + "'>setup</a>"); 
+					// row.attr("id","customer"+value.id);  
+					// row.appendTo("#tbody");
+					}
+					
+				);
+				removeLoading();
+				if(hasAppStore){
+					$('#nav').show();
+				}
+				clickenterprise();
+			}    
+		});   
+	});
+	}
+	
+	
+	
+	function removeTemplate(){
+		getTemplate().remove();
+	}
+	function getTemplate(){
+		if(template == null){
+			template = $("#template");
+		}
+		return template;
+	}
+	function noSetup(){
+		alert("无安装文件。");
+	}
+	function removeLoading(){
+		getLoading().remove();
+	}
+	function getLoading(){
+		if(loading == null){
+			loading = $("#loading");
+		}
+		return loading;
+	}
+	function clearData(){
+		$('.listitem').remove();
+	}
+	function clickenterprise() {
+		$('#enterprise').click();
+	}
+	function onload (){
+		removeTemplate();
+		loadData();
+		clickenterprise();
+	}
+	</script>
+</head>
+<body onload="onload();" class="ui-mobile-viewport ui-overlay-c">
+    <div class="page ui-page ui-body-c ui-page-active" data-role="page" id="page1" data-url="page1" tabindex="0" style="min-height: 901px;">
+		<div data-role="navbar" data-iconpos="left" id="nav" style="display:none" class="ui-navbar ui-mini" role="navigation">
+            <ul class="ui-grid-a">
+                <li class="ui-block-a">
+                    <a id="enterprise" href="http://slb.wfjmall.cn:9910/#" data-transition="fade" data-theme="c" data-icon="" data-ajax="false" onclick="showData(false)" ;="" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-iconpos="left" data-inline="true" class="ui-btn ui-btn-up-c ui-btn-inline ui-btn-icon-left ui-btn-active"><span class="ui-btn-inner"><span class="ui-btn-text">
+                        企业版
+                    </span></span></a>
+                </li>
+				<li class="ui-block-b">
+                    <a id="appStore" href="http://slb.wfjmall.cn:9910/#" data-transition="fade" data-theme="c" data-icon="" data-ajax="false" onclick="showData(true)" ;="" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-iconpos="left" data-inline="true" class="ui-btn ui-btn-up-c ui-btn-inline ui-btn-icon-left"><span class="ui-btn-inner"><span class="ui-btn-text">
+                        Appstore
+                    </span></span></a>
+                </li>
+            </ul>
+        </div>
+        <ul data-role="listview" data-divider-theme="a" data-inset="true" id="list" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+            <li data-role="list-divider" role="heading" class="ui-li ui-li-divider ui-bar-a ui-corner-top">
+                <div style="width: 207px; height: 20px;display:inline-block;position:relative;">
+					<img src="./久其应用中心_files/logo.png" alt="image" width="103" height="30" style="position: absolute; top: 0%; left: 0%; margin-left: 0px; margin-top: 0px">
+				</div>
+				<!--久其应用中心，为您提供最便捷的应用管理。-->
+            </li>
+            
+            
+        <li id="58D8D32A60000001E22FD3986C4905FB" class="listitem ui-li ui-li-static ui-btn-up-c ui-corner-bottom ui-li-last" data-theme="c" style="display: list-item;">
+            	<div style="height:50px;position:relative;">
+					<!--图片-->
+            		<div style="width: 128px; height: 70px;float:left;position:relative;">
+            			<img id="image" src="./久其应用中心_files/58D8D32A60000001E22FD3986C4905FB" alt="image" width="35" height="35" style="position: absolute; top: 0%; left: 0%; margin-left: 0px; margin-top: 5px">
+            		</div>
+					<!--信息-->
+            		<div style="float:left;vertical-align: top;position:absolute;left:60px;top:0px;">
+            			<!--名称版本-->
+						<span class="name" id="name">WFJ_IOS_v1...</span><br>
+            			<span class="version">版本：</span> <span class="version" id="version">1.2.3</span><br>
+						
+						<!--描述-->
+            			<!--<font size=2 >简单描述:</font>-->
+						<span class="description" id="description">WFJ_IOS_v1...</span>
+            		</div>
+					<div style="float: right;">
+						<a class="setup ui-btn ui-shadow ui-btn-corner-all ui-btn-up-c" id="setup" data-ajax="false" href="itms-services://?action=download-manifest&amp;url=4C68CBC5A0000001D84E4FE4DDD8DB4C.plist" data-role="button" style="vertical-align: top;" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">
+										直接下载
+						</span></span></a>
+					</div>
+               
+                </div>
+            </li></ul>
+
+
+</div><div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon ui-icon-loading"></span><h1>loading</h1></div></body></html>
